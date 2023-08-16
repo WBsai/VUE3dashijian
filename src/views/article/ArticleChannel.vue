@@ -1,8 +1,9 @@
 <script setup>
 import { ref } from 'vue'
-import { artGetChannelsService } from '../../api/article'
+import { artGetChannelsService, artDelChannelService } from '../../api/article'
 import { Edit, Delete } from '@element-plus/icons-vue'
 import ChannelEdit from './components/ChannelEdit.vue'
+import { ElMessageBox } from 'element-plus'
 
 const channelLiset = ref([])
 const loading = ref(false)
@@ -16,8 +17,16 @@ const getChannelLiset = async () => {
 }
 getChannelLiset()
 
-const onDelChannel = (row, $index) => {
-  console.log(row, $index)
+// 删除
+const onDelChannel = async (row) => {
+  await ElMessageBox.confirm('你确认要删除该分类么', '温馨提示', {
+    type: 'warning',
+    confirmButtonText: '确认',
+    cabcelButtonText: '取消'
+  })
+  await artDelChannelService(row.id)
+  ElMessage.success('删除成功')
+  getChannelLiset()
 }
 
 // 编辑
