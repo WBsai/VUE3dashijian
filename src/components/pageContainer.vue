@@ -6,9 +6,10 @@ defineProps({
   }
 })
 </script>
+
 <template>
   <el-card class="page-container">
-    <template #herder>
+    <template #header>
       <div class="header">
         <span>{{ title }}</span>
         <div class="extra">
