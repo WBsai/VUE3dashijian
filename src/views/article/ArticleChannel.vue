@@ -29,6 +29,10 @@ const onEditiChannel = (row) => {
 const onAddChannel = () => {
   dialog.value.open({})
 }
+
+const onSuccess = () => {
+  getChannelLiset()
+}
 </script>
 
 <template>
@@ -66,7 +70,7 @@ const onAddChannel = () => {
       </template>
     </el-table>
 
-    <channel-edit ref="dialog"></channel-edit>
+    <channel-edit ref="dialog" @success="onSuccess"></channel-edit>
   </page-container>
 </template>
 
