@@ -10,8 +10,8 @@ const total = ref(0) // 总条数
 
 // 定义请求参数对象
 const params = ref({
-  pagenum: 1,
-  pagesize: 5,
+  pagenum: 1, // 当前页
+  pagesize: 5, // 当前生效的没页条数
   cate_id: '',
   state: ''
 })
@@ -23,6 +23,25 @@ const getArticleList = async () => {
   total.value = res.data.total
 }
 getArticleList()
+
+// 处理分页逻辑
+const onSizeChange = (size) => {
+  // console.log('当前没页条数', size);
+  // 只要是每页条数变化的，那么原本正在访问的当前页意义不大了，数据大概率已经不再原来的那一页了
+  // 重新从第一页渲染即可
+  params.value.pagenum = 1
+  params.value.pagesize = size
+  // 基于最新的当前页 和 每页 条数渲染数据
+  getArticleList()
+}
+
+const onCurrentChange = (page) => {
+  // console.log('页码变化了', page);
+  // 更新当前页
+  params.value.pagenum = page
+  // 基于最新的当前页渲染数据
+  getArticleList()
+}
 
 // 编辑逻辑
 const onEditArticle = (row) => {
@@ -98,6 +117,19 @@ const onDeleteArticle = (row) => {
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页区域 -->
+    <el-pagination
+      v-model:current-page="params.pagenum"
+      v-model:page-size="params.pagesize"
+      :page-sizes="[2, 3, 5, 10]"
+      :background="true"
+      layout="jumper,total,sizes,,prev,pager,next"
+      :total="total"
+      @size-change="onSizeChange"
+      @current-change="onCurrentChange"
+      style="margin-top: 20px; justify-content: flex-end"
+    />
   </page-container>
 </template>
 
