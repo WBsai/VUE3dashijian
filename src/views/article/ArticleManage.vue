@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { Delete, Edit } from '@element-plus/icons-vue'
+import ChannelSelect from './components/ChannelSelect.vue'
 
 const articleList = ref([
   {
@@ -28,6 +29,14 @@ const onEditArticle = (row) => {
 const onDeleteArticle = (row) => {
   console.log(row)
 }
+
+// 定义请求参数对象
+const params = ref({
+  pagenum: 1,
+  pagesize: 5,
+  cate_id: '',
+  state: ''
+})
 </script>
 
 <template>
@@ -39,15 +48,16 @@ const onDeleteArticle = (row) => {
     <!-- 表单区域 -->
     <el-form inline>
       <el-form-item label="文章分类:">
-        <!-- label 给用户看的, value 收集起来提交给后台的 -->
-        <el-select>
-          <el-option label="新闻" value="110"></el-option>
-          <el-option label="体育" value="137"></el-option>
-        </el-select>
+        <!-- Vue2 => v-model :value 和 @input 的简写 -->
+        <!-- Vue3 => v-model :modelValue 和 @update:modelValue 的简写 -->
+        <!-- <channel-select v-model:modelValue="params.cate_id"></channel-select> -->
+
+        <!-- Vue3 => v-model :cid 和 @update:cid 的简写 -->
+        <channel-select v-model:cid="params.cate_id"></channel-select>
       </el-form-item>
       <el-form-item label="发布状态:">
         <!-- 这里后台标记发布状态,就是通过中文标记的,已发布 / 草稿 -->
-        <el-select>
+        <el-select v-model="params.state">
           <el-option label="已发布" value="已发布"></el-option>
           <el-option label="草稿" value="草稿"></el-option>
         </el-select>
