@@ -4,6 +4,7 @@ import { Delete, Edit } from '@element-plus/icons-vue'
 import ChannelSelect from './components/ChannelSelect.vue'
 import { artGetListService } from '../../api/article'
 import { formatTime } from '../../utils/format'
+import ArticleEdit from './components/ArticleEdit.vue'
 
 const articleList = ref([]) // 文章列表
 const total = ref(0) // 总条数
@@ -59,21 +60,40 @@ const onReset = () => {
   getArticleList()
 }
 
+const articleEditRef = ref()
+// 添加逻辑
+const onAddArticle = () => {
+  articleEditRef.value.open({})
+}
+
 // 编辑逻辑
 const onEditArticle = (row) => {
-  console.log(row)
+  articleEditRef.value.open(row)
 }
 
 // 删除逻辑
 const onDeleteArticle = (row) => {
   console.log(row)
 }
+
+// 添加或者编辑，成功的回调
+const onSuccess = (type) => {
+  if (type === 'add') {
+    // 如果是添加，最后是渲染最后一页
+    const lastPage = Math.ceil((total.value + 1) / params.value.pagesize)
+    // 更新成最大页码数，在渲染
+    params.value.pagenum = lastPage
+    getArticleList()
+  }
+  // 如果是编辑，直接渲染当前页即可
+  getArticleList()
+}
 </script>
 
 <template>
   <page-container title="文章管理">
     <template #extra>
-      <el-button>添加文章</el-button>
+      <el-button type="primary" @click="onAddArticle">添加文章</el-button>
     </template>
 
     <!-- 表单区域 -->
@@ -146,6 +166,9 @@ const onDeleteArticle = (row) => {
       @current-change="onCurrentChange"
       style="margin-top: 20px; justify-content: flex-end"
     />
+
+    <!-- 添加编辑的抽屉 -->
+    <article-edit ref="articleEditRef" @success="onSuccess"></article-edit>
   </page-container>
 </template>
 
